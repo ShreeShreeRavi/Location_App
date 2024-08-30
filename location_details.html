@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Location Details</title>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script>
+        function loadMapScript() {
+            var script = document.createElement('script');
+            script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDGQqyKPp5gbwT5g9z-V07kU4g9rlwWXK0&callback=initMap';
+            document.head.appendChild(script);
+        }
+    </script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script>
+        loadMapScript();
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #0a4e70;
+        }
+        #location {
+            font-size: 18px;
+            margin-top: 20px;
+            background-color:#0a4e70;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #012739;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        button:hover {
+                background-color:#010b10;
+        }
+
+        #map {
+            margin-top: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <br><button onclick="getLocation()">Get Location📍</button>
+    <p id="location"></p>
+    <div id="map" style="height: 450px;"></div>
+    <ul id="history"></ul>
+    
+
+    <button onclick="viewLocationHistory()">Location History</button>
+
+    </body>
+    <script type="text/javascript">
+        document.addEventListener("deviceready", onDeviceReady, false);
+    
+        var map;
+        var district = "Dindigul"; // Default value
+    
+        function onDeviceReady() {
+            console.log("Device is ready");
+            getLocation();
+        }
+    
+        function getLocation() {
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+        }
+    
+        function onSuccess(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            var accuracy = position.coords.accuracy;
+
+            var locationData = {
+        latitude: latitude,
+        longitude: longitude,
+        accuracy: accuracy,
+        timestamp: new Date().toLocaleString(),
+        district: district
+    };
+
+    var locationHistory = JSON.parse(localStorage.getItem('locationHistory')) || [];
+    locationHistory.push(locationData);
+    localStorage.setItem('locationHistory', JSON.stringify(locationHistory));
+    
+            // Display location information
+            var locationString = "Latitude: " + latitude + "<br>Longitude: " + longitude + "<br>Accuracy: " + accuracy + " meters<br>District: " + district;
+            document.getElementById("location").innerHTML = locationString;
+    
+            initMap(latitude, longitude);
+        }
+    
+        function onError(error) {
+            alert("Error getting location: " + error.message);
+        }
+    
+        function initMap(latitude, longitude) {
+            var mapOptions = {
+                center: { lat: latitude, lng: longitude },
+                zoom: 15
+            };
+    
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    
+            // Add a marker at the user's location
+            var userLocation = new google.maps.LatLng(latitude, longitude);
+            var marker = new google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: 'Your Location'
+            });
+        }
+
+    
+        function viewLocationHistory() {
+    var locationHistory = JSON.parse(localStorage.getItem('locationHistory')) || [];
+    localStorage.setItem('locationHistory', JSON.stringify(locationHistory));
+    window.location.href = 'location_history.html';
+}
+
+    </script>
+    
+
+</html>
