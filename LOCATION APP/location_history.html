@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Location History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #0a4e70;
+        }
+
+        h2 {
+            color: #f6f6f6;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            background-color: #70b8dc;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Location History</h2>
+    <ul id="history"></ul>
+
+    <script type="text/javascript">
+        var locationHistory = JSON.parse(localStorage.getItem('locationHistory')) || [];
+        var historyList = document.getElementById("history");
+
+        locationHistory.forEach(function (location) {
+            var listItem = document.createElement("li");
+            listItem.textContent = `Latitude: ${location.latitude}, Longitude: ${location.longitude}, Accuracy: ${location.accuracy} meters, District: ${location.district}, Time: ${location.timestamp}`;
+            historyList.appendChild(listItem);
+        });
+    </script>
+</body>
+
+</html>
